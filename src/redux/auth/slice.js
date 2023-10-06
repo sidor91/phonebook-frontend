@@ -2,12 +2,12 @@ import { persistReducer } from 'redux-persist';
 import { createSlice } from '@reduxjs/toolkit';
 import storage from 'redux-persist/lib/storage';
 import {
-  signupUser,
-  loginUser,
-  logoutUser,
-  fetchCurrentUser,
-  updateUserById,
-} from './operations';
+	signupUser,
+	loginUser,
+	logoutUser,
+	fetchCurrentUser,
+	updateUserById,
+} from "./operations";
 
 const initialState = {
   user: { id: '', name: '', avatarURL: '' },
@@ -27,7 +27,7 @@ const handleRejected = (state, action) => {
 };
 
 const handleFulfilled = (state) => {
-state.actions.isLoggedIn = true;
+state.actions.isLoggedIn = true;  
 state.actions.isLoginFailed = false;
 state.actions.isRefreshing = false;
 }
@@ -39,42 +39,46 @@ export const authSlice = createSlice({
     setIsUserEdited: (state, action) => {
       state.actions.isUserEdited = action.payload;
     },
+    setToken: (state, action) => {
+      state.token = action.payload;
+    }
   },
   extraReducers: builder => {
     builder
-      .addCase(signupUser.pending, handlePending)
-      .addCase(signupUser.fulfilled, (state, action) => {
-        state.user = action.payload.user;
-        state.token = action.payload.token;
-        handleFulfilled(state);
-      })
-      .addCase(signupUser.rejected, handleRejected)
-      .addCase(loginUser.pending, handlePending)
-      .addCase(loginUser.fulfilled, (state, action) => {
-        state.user = action.payload.user;
-        state.token = action.payload.token;
-        handleFulfilled(state);
-      })
-      .addCase(loginUser.rejected, handleRejected)
-      .addCase(logoutUser.pending, handlePending)
-      .addCase(logoutUser.fulfilled, state => {
-        state.user = initialState.user;
-        state.token = initialState.token;
-        state.actions = initialState.actions;
-      })
-      .addCase(fetchCurrentUser.pending, handlePending)
-      .addCase(fetchCurrentUser.fulfilled, (state, action) => {
-        state.user = action.payload.user;
-        handleFulfilled(state);
-      })
-      .addCase(fetchCurrentUser.rejected, handleRejected)
-      .addCase(updateUserById.pending, handlePending)
-      .addCase(updateUserById.fulfilled, (state, action) => {
-        state.user = action.payload.user;
-        handleFulfilled(state);
-      })
-      .addCase(updateUserById.rejected, handleRejected)
-      .addDefaultCase(state => state);
+			.addCase(signupUser.pending, handlePending)
+			.addCase(signupUser.fulfilled, (state, action) => {
+				state.user = action.payload.user;
+				state.actions.isRefreshing = false;
+			})
+			.addCase(signupUser.rejected, handleRejected)
+			.addCase(loginUser.pending, handlePending)
+			.addCase(loginUser.fulfilled, (state, action) => {
+				state.user = action.payload.user;
+				state.token = action.payload.token;
+				handleFulfilled(state);
+			})
+			.addCase(loginUser.rejected, handleRejected)
+			.addCase(logoutUser.pending, handlePending)
+			.addCase(logoutUser.fulfilled, (state) => {
+				state.user = initialState.user;
+				state.token = initialState.token;
+				state.actions = initialState.actions;
+			})
+			.addCase(fetchCurrentUser.pending, handlePending)
+			.addCase(fetchCurrentUser.fulfilled, (state, action) => {
+				state.user = action.payload.user;
+				state.actions.isLoggedIn = true;
+				handleFulfilled(state);
+			})
+			.addCase(fetchCurrentUser.rejected, handleRejected)
+			.addCase(updateUserById.pending, handlePending)
+			.addCase(updateUserById.fulfilled, (state, action) => {
+				state.user = action.payload.user;
+				handleFulfilled(state);
+			})
+			.addCase(updateUserById.rejected, handleRejected)
+			
+			.addDefaultCase((state) => state);
   },
 });
 
@@ -90,4 +94,4 @@ export const authPersistedReducer = persistReducer(
   authSlice.reducer
 );
 
-export const { setIsUserEdited } = authSlice.actions;
+export const { setIsUserEdited, setToken } = authSlice.actions;

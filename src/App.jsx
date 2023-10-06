@@ -3,8 +3,8 @@ import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 // import { lazy } from 'react';
 import { fetchCurrentUser } from "@/redux/auth/operations";
-import { PrivateRoute } from "@/components/PrivateRoute";
-import { RestrictedRoute } from "@/components/RestrictedRoute";
+import PrivateRoute from "@/components/PrivateRoute";
+import RestrictedRoute from "@/components/RestrictedRoute";
 import { useAuth } from "@/utilites/hooks/useAuth";
 import Loader from "@/components/Loader";
 
