@@ -21,7 +21,6 @@ const AuthForm = () => {
   const handleShowPassword = () => setShowPassword(!showPassword);
   const dispatch = useDispatch();
   const { pathname } = useLocation();
-  // const { isLoginFailed } = useAuth();
 
 
   const handleSubmit = values => {
